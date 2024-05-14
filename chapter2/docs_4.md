@@ -80,3 +80,58 @@ flask db init
 | `flask db migrate` | 모델을 새로 생성하거나 변경할 때 사용 (실행하면 작업파일이 생성됨) | 
 | `flask db upgrade` | 모델의 변경 내용을 실제 데이터베이스에 적용할 때 사용 (위에서 생성된 작업파일을 실행하여 데이터베이스를 변경) | 
 
+## 2. 모델 만들기 
+
+파이보는 `질문 답변 게시판`이기 때문에 `질문`과 `답변`에 해당하는 모델이 있어야 한다. 
+- 모델 : 데이터를 다룰 목적으로 만든 파이썬 클래스 
+
+### 모델 속성 구상 
+
+- 질문 모델
+
+| 속성명 | 설명 | 
+| --- | --- | 
+| id | 질문 데이터의 고유 번호 |
+| subject | 질문 제목 |
+| content | 질문 내용 |
+| create_date | 질문 작성일시 |
+
+- 답변 모델 
+| 속성명 | 설명 | 
+| --- | --- | 
+| id | 답변 데이터의 고유 번호 |
+| question_id | 질문 데이터의 고유번호 |
+| content | 답변 내용 |
+| create_date | 답변 작성일시 |
+
+### 질문 모델 생성 
+
+구상한 속성을 가지고 모델을 정의해보자. 
+
+1. pybo 디렉터리에 모델을 정의하기 위한 models.py 생성
+2. 질문 모델 Question 클래스를 작성하자. 
+
+### 답변 모델 생성 
+
+질문 모델을 참조하는 외래키 설정을 위해서 다음과 같은 내용을 추가해야 한다.
+
+- 질문 모델을 참조하기 위한 변수 question 
+```
+question = db.relationship('Question', backref=db.backref('answer_set'))
+```
+- db.relationship의 매개변수 
+    1. Question : 참조할 모델 이름
+    2. backref : 역참조 설정
+        - 역참조 : 쉽게 말해 `질문`에서 `답변`을 거꾸로 참조하는 것 
+        - ex. 어떤 질문에 해당하는 객체가 `a_question`일 때
+            - `a_question.answer_set`와 같은 코드로 해당 질문에 대한 답변들을 참조가능
+
+- 외래키 설정 
+```
+question_id = db.Column(db.Integer, db.ForeignKey('question.id', ondelete = 'CASCADE'))
+```
+
+1. 앞서 설정한 `question`의 `id 속성`을 참조하는 외래키
+2. 삭제 옵션은 `CASCADE`로 설정
+
+
