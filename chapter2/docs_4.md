@@ -134,4 +134,12 @@ question_id = db.Column(db.Integer, db.ForeignKey('question.id', ondelete = 'CAS
 1. 앞서 설정한 `question`의 `id 속성`을 참조하는 외래키
 2. 삭제 옵션은 `CASCADE`로 설정
 
+## 3. 모델을 이용해 테이블 자동으로 생성하기 
+
+모델을 구상하고 생성했으니까 flask의 migrate 기능을 이용해서 DB의 테이블을 생성해보자. 
+
+### 모델 import 
+
+- [모델을 이용한 테이블 생성 커밋]()
+
 

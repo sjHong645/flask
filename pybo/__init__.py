@@ -15,6 +15,7 @@ def create_app() :
     # ORM
     db.init_app(app)
     migrate.init_app(app, db)
+    from . import models # flask의 migrate 기능을 인식하기 위해 추가된 코드
 
     # blueprint
     from .views import main_views
