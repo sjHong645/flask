@@ -143,3 +143,28 @@ question_id = db.Column(db.Integer, db.ForeignKey('question.id', ondelete = 'CAS
 - [모델을 이용한 테이블 생성 커밋]()
 
 
+### 리비전 파일 생성
+위와 같이 코드를 작성하고 나서 `터미널`에 아래 명령어를 입력한다.
+
+```
+flask db migrate
+```
+
+이걸 입력하고 나면 `migration/versions 디렉토리 아래에 리비전 파일`과 `pybo.db` 파일이 생성된 걸 확인할 수 있다. 
+
+### 리비전 파일 실행 
+
+```
+flask db upgrade
+```
+
+`pybo.db` 파일은 SQLite 데이터베이스의 데이터 파일이다. 
+
+
+## 4. 생성된 테이블 살펴보기 
+
+pybo.db 데이터 파일에 question, answer 테이블이 제대로 생성되었는지 확인해보려고 한다. 이를 위해 SQLite의 GUI 도구인 `DB Browser for SQLite`를 사용한다.
+
+### DB Browser for SQLite [설치](https://sqlitebrowser.org/dl/) 
+
+### DB Browser에서 pybo.db 열기 
