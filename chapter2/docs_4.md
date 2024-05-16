@@ -168,3 +168,11 @@ pybo.db 데이터 파일에 question, answer 테이블이 제대로 생성되었
 ### DB Browser for SQLite [설치](https://sqlitebrowser.org/dl/) 
 
 ### DB Browser에서 pybo.db 열기 
+
+1. DB Browser 실행
+2. 파일 → 데이터베이스 열기 → pybo.db 파일 선택 → 열기
+
+아래와 같이 question, answer 테이블이 생성되었음을 확인할 수 있다. 
+![image](https://github.com/sjHong645/flask/assets/64796257/37092eb1-8647-4e42-bd99-19074bc9753d)
+
+`alembic_version` 테이블은 Flask-Migrate 라이브러리가 데이터베이스를 변경 및 관리하려고 사용하는 테이블이므로 신경 쓰지 않아도 된다.
