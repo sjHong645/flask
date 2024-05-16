@@ -176,3 +176,56 @@ pybo.db 데이터 파일에 question, answer 테이블이 제대로 생성되었
 ![image](https://github.com/sjHong645/flask/assets/64796257/37092eb1-8647-4e42-bd99-19074bc9753d)
 
 `alembic_version` 테이블은 Flask-Migrate 라이브러리가 데이터베이스를 변경 및 관리하려고 사용하는 테이블이므로 신경 쓰지 않아도 된다.
+
+## 5. 모델 사용하기 
+
+모델 생성 OK & 모델을 기반으로 테이블 생성 OK 
+
+이제 모델을 사용해보자. 여러 방법 중 `flask shell`을 사용해서 알아보자. 
+
+### 플라스크 쉘 실행 
+```
+flask shell
+```
+
+위 명령어를 실행해서 `플라스크 쉘`을 실행한다. 
+`플라스크 쉘`은 flask를 실행하는데 필요한 환경이 자동으로 설정되어 실행되므로 일반 python 쉘과는 다르다. 
+
+### 질문 데이터 query 모음 
+```
+>>> from pybo.models import Question, Answer
+>>> from datetime import datetime
+>>> from pybo import db 
+>>> db.session.add(q)
+>>> db.session.commit()
+>>> q.id
+1
+>>> q = Question(subject = 'pybo는 뭐냐 2번째', content = 'pybo를 2번째 알려 
+줘', create_date = datetime.now())
+>>> db.session.add(q)
+>>> db.session.commit()
+>>> q.id
+2
+>>> Question.query.all()
+[<Question 1>, <Question 2>]
+>>> Question.query.filter(Question.id == 1).all()
+[<Question 1>]
+>>> Question.query.get(1)
+<Question 1>
+>>> Question.query.filter(Question.subject.like('%2번째%')).all() 
+[<Question 2>]
+>>> q = Question.query.get(2)
+>>> q
+<Question 2>
+>>> q.subject
+'pybo는 뭐냐 2번째'
+>>> q.subject = 'Flask Model Operation'
+>>> q
+<Question 2>
+>>> db.session.commit()
+>>> q = Question.query.get(1)
+>>> db.session.delete(q)
+>>> db.session.commit()
+>>> Question.query.all()
+[<Question 2>]
+```
