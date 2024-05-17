@@ -196,36 +196,96 @@ flask shell
 >>> from pybo.models import Question, Answer
 >>> from datetime import datetime
 >>> from pybo import db 
+
+# 데이터 Insert
+## Question 모델 객체 생성 및 DB에 커밋 
+>>> q = Question(subject = 'pybo는 뭐냐', content = 'pybo를 알려줘', create_date = datetime.now())
 >>> db.session.add(q)
 >>> db.session.commit()
->>> q.id
+>>> q.id # 데이터 잘 생성되었는지 확인 
 1
+
+## Question 모델 2번째 객체 생성 및 DB에 커밋 
 >>> q = Question(subject = 'pybo는 뭐냐 2번째', content = 'pybo를 2번째 알려 
 줘', create_date = datetime.now())
 >>> db.session.add(q)
 >>> db.session.commit()
->>> q.id
+>>> q.id # 데이터 잘 생성되었는지 확인 
 2
+
+# 데이터 select 
+## 모든 데이터 확인 
 >>> Question.query.all()
 [<Question 1>, <Question 2>]
+
+## 질문 객체의 id값이 1인 모든 데이터 확인 
 >>> Question.query.filter(Question.id == 1).all()
 [<Question 1>]
+
+## id는 유일한 값이라서 get 함수를 사용해서 조회 가능
 >>> Question.query.get(1)
 <Question 1>
+
+## LIKE 구문을 이용한 데이터 조회 
 >>> Question.query.filter(Question.subject.like('%2번째%')).all() 
 [<Question 2>]
 >>> q = Question.query.get(2)
 >>> q
 <Question 2>
+
+# 데이터 update
+## 대입 연산자를 이용한 데이터 수정 
 >>> q.subject
 'pybo는 뭐냐 2번째'
 >>> q.subject = 'Flask Model Operation'
 >>> q
 <Question 2>
 >>> db.session.commit()
+
+# 데이터 delete
 >>> q = Question.query.get(1)
 >>> db.session.delete(q)
 >>> db.session.commit()
->>> Question.query.all()
+>>> Question.query.all() # 1번째 질문 객체를 삭제해서 2번째 질문객체만 남음 
 [<Question 2>]
+```
+
+### 답변 데이터 query 모음 
+
+데이터 삽입, 조회, 수정, 삭제는 모두 동일하게 실행하면 된다. 
+다른 테이블과 연결하는 방법을 위주로 살펴보자. 
+
+```
+>>> from datetime import datetime
+>>> from pybo.models import Question, Answer
+>>> from pybo import db
+
+# Question 객체 중 id = 2인 객체를 q 변수에 저장 
+>>> q = Question.query.get(2) 
+
+# Answer 모델에는 어떤 질문에 해당하는 답변인지 연결하기 위해서
+# question_id라는 외래키를 설정했다. 
+# Answer 객체가 원하는 question 객체와 연결하기 위해 아래와 같이 설정했다. 
+>>> a = Answer(question = q, content = '자동으로 생성된다', create_date = datetime.now())
+>>> a
+<Answer (transient 1852308236400)>
+>>> db.session.add(a)
+>>> db.session.commit()
+>>> a.id # 데이터 잘 저장되었는지 확인 
+1
+>>> a = Answer.query.get(1)
+>>> a
+<Answer 1>
+```
+
+### 답변에 연결된 질문 찾기 vs 질문에 달린 답변 찾기
+
+```
+# Answer 객체와 연결되어 있는 Question 객체 확인 
+>>> a.question
+<Question 2>
+
+# Question 객체와 연결된 모든 답변 객체를 조회 
+>>> q.answer_set
+[<Answer 1>]
 ```
