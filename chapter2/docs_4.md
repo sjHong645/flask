@@ -182,6 +182,7 @@ pybo.db 데이터 파일에 question, answer 테이블이 제대로 생성되었
 모델 생성 OK & 모델을 기반으로 테이블 생성 OK 
 
 이제 모델을 사용해보자. 여러 방법 중 `flask shell`을 사용해서 알아보자. 
+(잘 보면 models.py 에서 구현한 내용과 긴밀하게 연결되어 있다.)
 
 ### 플라스크 쉘 실행 
 ```
@@ -289,3 +290,4 @@ flask shell
 >>> q.answer_set
 [<Answer 1>]
 ```
+
