@@ -96,4 +96,65 @@ python의 for문과 유사하다. 마찬가지로 `{% endfor %}`로 닫아줘야
 
 ## 2. 질문 상세 기능 만들기 
 
+1번 실습을 통해 만든 질문 목록 페이지에서 링크를 누르면 오류메시지가 나타난다. 
+
+```
+Not Found
+
+The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+```
+
+말 그대로 내가 요청한 페이지(http://localhost:5000/detail/2/)의 URL이 정의되지 않아서 발생한 오류다. 
+이번에는 질문의 제목과 내용이 표시되도록 해보자. 
+
+### 라우팅 함수 
+
+질문 목록 링크 : http://localhost:5000/detail/2/ => Question 모델 데이터 중 id값이 2인 데이터를 조회하라는 뜻 
+
+여기에 대응할 수 있도록 `main_views.py` 파일에 라우팅 함수를 추가한다. 
+
+``` python
+@bp.route('/detail/<int:question_id>/')
+def detail(question_id) : 
+    question = Question.query.get(question_id) # Question 모델 데이터 중 URL를 통해 전달받은 id값의 데이터를 조회한다. 
+    
+    # 조회한 데이터를 question/question_detail.html 파일이 전달받는다. 
+    return render_template('question/question_detail.html', question = question) 
+```
+
+즉, http://localhost:5000/detail/2/ 페이지를 요청받으면 
+
+main_views.py의 detail 메소드 실행 => 매개변수 question_id에는 2라는 값이 전달된다. 
+
+### 질문 상세 템플릿 작성하기 
+
+이제 `question/question_detail.html` 파일을 만들자. 
+
+``` html
+<h1>{{ question.subject }}</h1>
+<div>
+    {{ question.content }}
+</div>
+```
+
+이제 flask를 실행하고 나서 링크를 클릭하면 원하는 화면이 출력될 것이다. 
+
+### 404 에러 페이지 표시하기 
+
+- http://localhost:5000/detail/30/ 페이지를 요청하면... 빈 페이지가 나온다. 
+
+원래는 question_id 값을 잘못 썼기 때문에 404 오류가 발생해야 하는데 아무것도 보이지 않는 빈 페이지가 나온다. 
+
+존재하지 않는 페이지를 요청받았을 때 빈 페이지 대신 404 오류 페이지를 표시하도록 하기 위해서 detail 함수를 아래와 같이 수정하자.
+
+``` py
+@bp.route('/detail/<int:question_id>/')
+def detail(question_id) : 
+
+    # get대신 get_or_404 메소드를 사용함으로써 원하는 기능으로 수정했다. 
+    question = Question.query.get_or_404(question_id)
+    
+    return render_template('question/question_detail.html', question = question)
+```
+
 ## 3. 블루프린트로 기능 분리하기 
