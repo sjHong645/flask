@@ -158,3 +158,68 @@ def detail(question_id) :
 ```
 
 ## 3. 블루프린트로 기능 분리하기 
+
+지금까지는 질문 목록과 질문 상세 기능을 main_views.py 파일에 구현했다. 
+
+모든 기능을 main_views.py 파일에 구현할 수도 있지만, 각 기능을 블루프린트 파일로 분리해서 관리하면 유지/보수하는 데 유리하다. 
+
+### 질문 목록, 질문 상세 기능 분리하기 
+
+- pybo/views/question_views.py 
+
+``` python
+from flask import Blueprint, render_template
+
+from pybo.models import Question
+
+# 블루프린트 객체의 별칭을 question으로 지정 
+# url_prefix를 /question를 사용해 main_views.py 파일의 블루 프린트와 구별함 
+bp = Blueprint('question', __name__, url_prefix='/question')
+
+# 질문의 목록을 /list/ URL에서 요청이 왔을 때 question_list.html 파일을 화면에 출력하도록 함 
+@bp.route('/list/')
+def _list() : 
+    question_list = Question.query.order_by(Question.create_date.desc())
+    return render_template('question/question_list.html', question_list = question_list)
+
+@bp.route('/detail/<int:question_id>/')
+def detail(question_id) : 
+    question = Question.query.get_or_404(question_id)
+    
+    return render_template('question/question_detail.html', question = question)
+```
+
+- `pybo/__init__.py`
+
+``` py
+# blueprint
+    from .views import main_views, question_views
+    app.register_blueprint(main_views.bp)
+    app.register_blueprint(question_views.bp) # question_views.py에 등록한 블루 프린트를 적용
+```
+
+### url_for로 리다이렉트 기능 추가 
+
+- main_views.py 
+``` py
+# question_views.py 파일에 질문 목록과 질문 상세 기능을 구현해서 이와 관련된 부분은 삭제했다. 
+
+from flask import Blueprint, url_for
+from werkzeug.utils import redirect
+
+bp = Blueprint('main', __name__, url_prefix='/')
+
+@bp.route('/hello')
+def hello_pybo() : 
+    return 'Hello, Pybo!'
+
+@bp.route('/')
+def index() : 
+    
+    # `/` URL에 접근하면 question._list에 해당하는 URL로 redirect 되도록 했다. 
+    # redirect : 입력받은 URL로 리다이렉트
+    # url_for : 라우팅 함수와 매핑되어 있는 URL을 출력하는 함수 
+
+    # 
+    return redirect(url_for('question._list'))
+```

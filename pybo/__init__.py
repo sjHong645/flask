@@ -18,7 +18,8 @@ def create_app() :
     from . import models # flask의 migrate 기능을 인식하기 위해 추가된 코드
 
     # blueprint
-    from .views import main_views
+    from .views import main_views, question_views
     app.register_blueprint(main_views.bp)
+    app.register_blueprint(question_views.bp)
     
     return app
