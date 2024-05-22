@@ -220,6 +220,50 @@ def index() :
     # redirect : 입력받은 URL로 리다이렉트
     # url_for : 라우팅 함수와 매핑되어 있는 URL을 출력하는 함수 
 
-    # 
+    # 아래 코드를 자세히 설명하면 
+    # question._list : question이라는 블루프린트에 등록된 _list 함수를 의미한다. 
+    # 앞서 question_views.py에서 question이라는 블루프린트를 등록했고 
+    # 거기서 _list 메소드를 정의헸기에 해당 메소드를 의미한다. 
+
+    # _list 함수에 등록된 URL 매핑 규칙은 @bp.route('/list/') 이므로
+    # question 블루프린트의 prefix URL인 /question/과 /list/가 더해진 /question/list/ URL을 반환한다. 
+
+    # 즉, / 주소에 접속하면 /question/list/ 페이지로 리다이렉트 된다. 
     return redirect(url_for('question._list'))
+```
+
+### 하드 코딩된 URL에 url_for 함수 이용하기 
+
+url_for 함수 : 라우팅 함수의 이름으로 URL을 찾아준다. 
+
+이 기능을 이용해서 `질문 목록`에서 `질문 상세를 호출`하는 링크에 url_for을 사용해보자. 
+
+``` html
+<!-- 질문 목록 -->
+{% if question_list %}
+    <ul>
+    {% for question in question_list %}
+        <li><a href="{{ url_for('question.detail', question_id=question.id) }}">{{ question.subject }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>질문이 없습니다.</p>
+{% endif %}
+
+```
+
+- 기존 내용
+상세 페이지로 연결하는 링크가 아래와 같이 하드코딩되어 있었다. 
+``` html
+<li><a href="/detail/{{ question.id }}/">{{ question.subject }}</a></li>
+```
+
+- 수정 내용
+`url_for 함수`를 이용해 `question.detail 라우팅 함수`를 이용해서 URL을 찾도록 변경했다. 
+
+question.detail 라우팅 함수에 필요한 `question_id값`으로 `question.id값`을 전달했다. 
+
+이와 같이 수정함으로써 유지보수를 더욱 쉽게 할 수 있다는 장점을 챙길 수 있다. 
+``` html
+<li><a href="{{ url_for('question.detail', question_id=question.id) }}">{{ question.subject }}</a></li>
 ```
