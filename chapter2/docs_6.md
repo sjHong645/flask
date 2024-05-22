@@ -85,3 +85,25 @@ def create(question_id) :
     app.register_blueprint(question_views.bp)
     app.register_blueprint(answer_views.bp)
 ```
+
+## 2. 답변 표시하기 
+
+질문에 등록된 답변을 화면에 표시해보자. 이를 위해 질문 상세 템플릿에 아래와 같이 코드를 추가한다. 
+
+``` html
+<h1>{{ question.subject }}</h1>
+<div>
+    {{ question.content }}
+</div>
+<h5> {{ question.answer_set|length }}개의 답변이 있습니다.</h5>
+<div>
+    <ul>
+    {% for answer in question.answer_set %}
+        <li>{{ answer.content }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+(생락..)
+
+```
